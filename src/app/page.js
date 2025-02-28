@@ -5,7 +5,7 @@ import UserForm from "./components/Form";
 import DupontBlock from "./components/Dupont";
 
 const Home = () => {
-  const [tickerData, setTickerData] = useState(null); // State for storing fetched data
+  const [tickerData, setTickerData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -14,7 +14,6 @@ const Home = () => {
     setError(null);
 
     try {
-      // Corrected API path based on your file structure
       const fetchResponse = await fetch("/api/tickerInformation", {
         method: "POST",
         headers: {
@@ -24,21 +23,27 @@ const Home = () => {
       });
 
       const data = await fetchResponse.json();
+      console.log(data);
+
+      // Handle custom error message
+      if (!data || !data.data) {
+        setError("Something went wrong with the ticker data.");
+      }
 
       // Save fetched data to state
       setTickerData(data);
     } catch (error) {
-      setError(`An error occurred: ${error}.`);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // netIncome will only be accessed when tickerData is available
   const netIncome = tickerData?.data?.IncomeStatement?.[0]?.netIncome;
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center mt-8">
+      <h1 className="text-3xl font-bold">Dupont Analysis</h1>
       <UserForm
         onSubmit={handleSubmit}
         isLoading={isLoading}
@@ -47,20 +52,18 @@ const Home = () => {
       />
 
       {/* Render DupontBlock only if netIncome is available */}
-      {netIncome ? (
+      {netIncome && (
         <DupontBlock
           netIncome={netIncome}
-          revenue={tickerData?.data?.IncomeStatement?.[0]?.revenue} // You can access other data here as well
+          revenue={tickerData?.data?.IncomeStatement?.[0]?.revenue}
           totalAssets={tickerData?.data?.BalanceSheet?.[0]?.totalAssets}
           equity={tickerData?.data?.BalanceSheet?.[0]?.totalEquity}
+          company={tickerData?.data?.ticker}
         />
-      ) : (
-        <p>Loading...</p>
       )}
 
-      {/* You can also render the error or loading state here */}
-      {isLoading && <p>Loading data...</p>}
-      {error && <p>Error: {error}</p>}
+
+      {/* Display error alert */}
     </div>
   );
 };

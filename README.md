@@ -52,7 +52,7 @@ To get started with the project locally, follow these steps:
 
 ## Usage
 As simple as possible - just input ticker of company you are interested in
-
+> live demo available via [vercel](https://dupont-analyzer.vercel.app/)
 
 
 ---

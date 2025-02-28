@@ -21,7 +21,7 @@ export async function POST(request) {
         });
     } catch (error) {
         // If any error happens, return an error response
-        return createResponse({ message: `Error fetching data: ${error.message}` }, 500);
+        return createResponse({ message: "BRUH" }, 500);
     }
 }
 
